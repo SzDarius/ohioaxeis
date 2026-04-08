@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LizartStrgar78axes</title>
+  <style>
+    :root{
+      --bg:#0b0f16;
+      --panel:#121926;
+      --panel-2:#182233;
+      --text:#eaf0ff;
+      --muted:#9faecc;
+      --line:#263247;
+      --accent:#7fb4ff;
+      --agree:#1f9d55;
+      --agree2:#39c97a;
+      --neutral:#f4f6fb;
+      --disagree:#c93b4c;
+      --disagree2:#f05d6e;
+      --shadow:0 18px 50px rgba(0,0,0,.45);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(94,127,196,.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(100,200,170,.12), transparent 25%),
+        linear-gradient(180deg,#090d14,#0c111a 30%,#0c1118 100%);
+      min-height:100vh;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:18px}
+    .brand{
+      text-align:center;
+      margin:6px 0 18px;
+    }
+    .brand h1{
+      margin:0;
+      font-size:clamp(28px,5vw,52px);
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      text-shadow:0 4px 22px rgba(127,180,255,.18);
+    }
+    .brand p{margin:6px 0 0;color:var(--muted)}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)), var(--panel);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .hero, .quiz, .results{display:none}
+    .hero.active, .quiz.active, .results.active{display:block}
+    .hero-inner{padding:28px}
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:20px;
+      align-items:stretch;
+    }
+    .hero h2{margin:0 0 12px;font-size:clamp(24px,4vw,38px)}
+    .hero p{color:var(--muted);line-height:1.6}
+    .axis-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:18px;
+    }
+    .axis-chip{
+      background:var(--panel-2);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+      color:#d8e1f5;
+      font-size:14px;
+    }
+    .side-box{
+      background:linear-gradient(180deg, rgba(127,180,255,.08), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+    }
+    .side-box h3{margin:0 0 10px}
+    .small{font-size:13px;color:var(--muted)}
+    .btn{
+      appearance:none;border:0;cursor:pointer;
+      border-radius:16px;padding:14px 18px;font-weight:800;
+      transition:transform .12s ease, opacity .12s ease, filter .12s ease;
+    }
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+    .btn:active{transform:translateY(0)}
+    .btn-main{
+      width:100%;margin-top:18px;
+      color:#091018;background:linear-gradient(180deg,#b3d0ff,#79a9ff);
+      box-shadow:0 10px 30px rgba(113,165,255,.28);
+    }
+    .quiz-head{padding:18px 20px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+    .progress-row{display:flex;justify-content:space-between;gap:12px;align-items:center;color:var(--muted);font-size:14px}
+    .bar{height:10px;background:#0b1220;border-radius:999px;overflow:hidden;border:1px solid var(--line);margin-top:10px}
+    .bar > div{height:100%;background:linear-gradient(90deg,#6f8fcb,#88d7bc);width:0%}
+    .quiz-body{padding:28px}
+    .question-axis{display:inline-block;background:var(--panel-2);border:1px solid var(--line);padding:8px 12px;border-radius:999px;color:#c8d6f0;font-size:13px;margin-bottom:14px}
+    .question-text{font-size:clamp(24px,4.4vw,40px);line-height:1.18;margin:0 0 24px;font-weight:800}
+    .answers{  display:flex;
+  flex-direction:column;
+  gap:14px;
+  align-items:stretch;}
+    .answer-btn{
+  width:100%;
+  min-height:64px;
+  border:1px solid rgba(255,255,255,.08);
+  color:#eef3ff;
+  font-size:17px;
+  font-weight:700;
+  border-radius:18px;
+  box-shadow:0 8px 22px rgba(0,0,0,.22);
+    }
+    .dis2{background:linear-gradient(180deg,#7a3d49,#64323c);}
+    .dis1{background:linear-gradient(180deg,#6a3943,#572f37);}
+    .neu{  background:linear-gradient(180deg,#e8ebf1,#cfd5df);
+  color:#111827;  }
+    .agr1{background:linear-gradient(180deg,#335f4b,#2b4f40);}
+    .agr2{background:linear-gradient(180deg,#2d6a4f,#245640);}
+    .answer-btn:hover{  border-color:rgba(255,255,255,.16);
+  filter:brightness(1.03);
+  transform:translateY(-1px);}
+    .helper{margin-top:14px;color:var(--muted);font-size:14px}
+    .result-pad{padding:24px}
+    .headline{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+    .headline h2{margin:0;font-size:clamp(24px,4vw,38px)}
+    .pill{padding:10px 14px;border-radius:999px;background:var(--panel-2);border:1px solid var(--line);color:#d5e0f6;font-weight:700}
+    .grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;margin-top:20px}
+    .panel{background:var(--panel-2);border:1px solid var(--line);border-radius:18px;padding:18px}
+    .panel h3{margin:0 0 14px}
+    .compass{position:relative;aspect-ratio:1;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:#0b1220}
+    .quad{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+    .q1{background:rgba(220,76,93,.17)}
+    .q2{background:rgba(93,139,255,.17)}
+    .q3{background:rgba(110,231,183,.17)}
+    .q4{background:rgba(179,132,255,.17)}
+    .compass::before,.compass::after{content:"";position:absolute;background:rgba(255,255,255,.24)}
+    .compass::before{left:50%;top:0;bottom:0;width:1px}
+    .compass::after{top:50%;left:0;right:0;height:1px}
+    .compass-label{position:absolute;font-size:12px;color:#d8e0f4;background:rgba(10,14,21,.5);padding:4px 8px;border-radius:999px;backdrop-filter:blur(4px)}
+    .top{top:8px;left:50%;transform:translateX(-50%)}
+    .bottom{bottom:8px;left:50%;transform:translateX(-50%)}
+    .left{left:8px;top:50%;transform:translateY(-50%)}
+    .right{right:8px;top:50%;transform:translateY(-50%)}
+    .dot{position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid #0a0f17;box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+    .coord{margin-top:12px;color:var(--muted)}
+    .axis-row{margin:14px 0}
+    .axis-row .label{display:flex;justify-content:space-between;gap:10px;margin-bottom:6px;font-size:14px;color:#dce7ff}
+    .track{height:18px;border-radius:999px;background:#0b1220;border:1px solid var(--line);position:relative;overflow:hidden}
+    .fill-left,.fill-right{position:absolute;top:0;bottom:0}
+    .fill-left{right:50%;background:linear-gradient(90deg,#7bc0ff,#cfdfff)}
+    .fill-right{left:50%;background:linear-gradient(90deg,#f0b4c5,#d06b92)}
+    .center-line{position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,.35)}
+    .ideo-item{padding:14px 0;border-top:1px solid var(--line)}
+    .ideo-item:first-child{border-top:0;padding-top:0}
+    .ideo-name{font-size:18px;font-weight:800}
+    .ideo-score{color:#9ff0c6;font-weight:800;margin-left:8px}
+    .ideo-desc{color:var(--muted);margin-top:6px;line-height:1.5}
+    .foot{margin-top:24px;text-align:center;color:var(--muted)}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .btn-soft{background:var(--panel-2);color:#e7efff;border:1px solid var(--line)}
+    .btn-share{background:linear-gradient(180deg,#bce0ff,#86b6ff);color:#071018}
+    @media (max-width:800px){
+      .hero-grid,.grid2,.answers,.axis-list{grid-template-columns:1fr}
+      .question-text{font-size:clamp(22px,8vw,36px)}
+      .quiz-body,.hero-inner,.result-pad{padding:18px}
+      .answer-btn{min-height:58px;font-size:16px}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <h1>LizartStrgar78axes</h1>
+      <p>Dark political values test • one question at a time</p>
+    </div>
+
+    <section id="hero" class="hero active card">
+      <div class="hero-inner">
+        <div class="hero-grid">
+          <div>
+            <h2>Find where you land</h2>
+            <p>This version uses <strong>12 broad axes</strong>, simpler wording, and one question per screen so it feels cleaner and less repetitive. Questions focus on tradeoffs instead of mirrored opposites.</p>
+            <div class="axis-list" id="axisList"></div>
+            <button class="btn btn-main" id="startBtn">Start test</button>
+          </div>
+          <div class="side-box">
+            <h3>How it works</h3>
+            <p class="small">You answer with five buttons: two disagree options, neutral, and two agree options. Each answer shifts one axis. At the end you get:</p>
+            <p class="small">• a political compass<br>• all 12 axis sliders<br>• your closest ideology<br>• your top 10 ideology matches</p>
+            <p class="small">Compass uses <strong>Economics</strong> on the horizontal axis and <strong>Authority/Liberty</strong> on the vertical axis.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz" class="quiz card">
+      <div class="quiz-head">
+        <div class="progress-row">
+          <div id="progressText">Question 1</div>
+          <div id="axisHint">Authority vs Liberty</div>
+        </div>
+        <div class="bar"><div id="progressBar"></div></div>
+      </div>
+      <div class="quiz-body">
+        <div class="question-axis" id="questionAxis"></div>
+        <h2 class="question-text" id="questionText"></h2>
+        <div class="answers">
+          <button class="btn answer-btn agr2" data-value="1">Strongly agree</button>
+                    <button class="btn answer-btn agr1" data-value="0.5">Agree</button>
+                    <button class="btn answer-btn neu" data-value="0">Neutral / unsure</button>
+          <button class="btn answer-btn dis1" data-value="-0.5">Disagree</button>
+                    <button class="btn answer-btn dis2" data-value="-1">Strongly disagree</button>
+        </div>
+        <div class="helper">Answer the statement, then the next question appears immediately.</div>
+      </div>
+    </section>
+
+    <section id="results" class="results card">
+      <div class="result-pad">
+        <div class="headline">
+          <div>
+            <h2>Your closest ideology: <span id="bestIdeology"></span></h2>
+            <div class="small" id="bestDescription"></div>
+          </div>
+          <div class="pill" id="answeredCount"></div>
+        </div>
+
+        <div class="grid2">
+          <div class="panel">
+            <h3>Political compass</h3>
+            <div class="compass" id="compass">
+              <div class="quad">
+                <div class="q1"></div><div class="q2"></div><div class="q3"></div><div class="q4"></div>
+              </div>
+              <div class="compass-label top">Authority</div>
+              <div class="compass-label bottom">Liberty</div>
+              <div class="compass-label left">Collective econ</div>
+              <div class="compass-label right">Market econ</div>
+              <div class="dot" id="dot"></div>
+            </div>
+            <div class="coord" id="coordText"></div>
+          </div>
+          <div class="panel">
+            <h3>Top 10 ideologies</h3>
+            <div id="topIdeologies"></div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:20px;">
+          <h3>Axis results</h3>
+          <div id="axisResults"></div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-share" id="restartBtn">Retake test</button>
+        </div>
+        <div class="foot">made by Lizart 🇸🇰 Strgar 🇭🇺</div>
+      </div>
+    </section>
+  </div>
+
+<script>
+const axes = [
+  ["Authority", "Liberty"],
+  ["Democracy", "Elitism"],
+  ["Globalism", "Nationalism"],
+  ["Equality", "Hierarchy"],
+  ["Collective Economics", "Market Economics"],
+  ["Regulation", "Laissez-Faire"],
+  ["Civic Nation", "Ethnic Identity"],
+  ["Environmentalism", "Industrialism"],
+  ["Tradition", "Progress"],
+  ["Expression", "Control"],
+  ["Collectivism", "Individualism"],
+  ["Reform", "Revolution"]
+];
+
+const questions = [
+  {a:0,t:"A society needs a strong state to keep order."},
+  {a:0,t:"People should be free to live how they want even if it weakens social control.", s:-1},
+  {a:0,t:"Security matters more than personal freedom."},
+  {a:0,t:"Power is dangerous, so authority should always be limited.", s:-1},
+  {a:0,t:"Strict law enforcement is worth some loss of liberty."},
+  {a:0,t:"The state should not interfere in peaceful personal choices.", s:-1},
+
+  {a:1,t:"Ordinary people should have more direct say in major decisions."},
+  {a:1,t:"A country works better when experts lead instead of the masses.", s:-1},
+  {a:1,t:"Public officials should follow the public will even when they disagree."},
+  {a:1,t:"Too much democracy leads to chaos and bad decisions.", s:-1},
+  {a:1,t:"Political power should be spread broadly, not held by a few."},
+  {a:1,t:"A stable elite can govern better than emotional public opinion.", s:-1},
+
+  {a:2,t:"International cooperation is usually better than putting the nation first."},
+  {a:2,t:"A nation should protect its own interests even if global ties suffer.", s:-1},
+  {a:2,t:"Borders should be more open to trade, travel, and exchange."},
+  {a:2,t:"National identity matters more than global solidarity.", s:-1},
+  {a:2,t:"Humanity should be thought of as one wider community."},
+  {a:2,t:"Global institutions often weaken national sovereignty.", s:-1},
+
+  {a:3,t:"Large gaps in status and wealth are harmful to society."},
+  {a:3,t:"Some people are naturally meant to lead over others.", s:-1},
+  {a:3,t:"A fair society should aim for much greater equality."},
+  {a:3,t:"Hierarchy is necessary and often good.", s:-1},
+  {a:3,t:"It is wrong for a few people to hold vastly more power than everyone else."},
+  {a:3,t:"Social rank gives people direction and structure.", s:-1},
+
+  {a:4,t:"Important parts of the economy should be publicly or collectively owned."},
+  {a:4,t:"Private ownership creates better outcomes than collective ownership.", s:-1},
+  {a:4,t:"Workers should have far more control over workplaces."},
+  {a:4,t:"Profit-driven private enterprise is the best economic engine.", s:-1},
+  {a:4,t:"Housing, energy, and transport should not be left mostly to private profit."},
+  {a:4,t:"The market should decide most production and prices.", s:-1},
+
+  {a:5,t:"The government should regulate business strongly."},
+  {a:5,t:"The economy works best when the state mostly stays out of it.", s:-1},
+  {a:5,t:"Big companies need firm rules to stop abuse."},
+  {a:5,t:"Too many regulations do more harm than good.", s:-1},
+  {a:5,t:"Workers and consumers need legal protection even if business slows down."},
+  {a:5,t:"Competition should be trusted more than regulators.", s:-1},
+
+  {a:6,t:"A nation should be based mainly on shared citizenship and laws."},
+  {a:6,t:"Shared ancestry matters more than civic values in defining a nation.", s:-1},
+  {a:6,t:"Someone can fully belong to a nation without sharing its ethnic roots."},
+  {a:6,t:"A nation loses itself when it becomes too ethnically mixed.", s:-1},
+  {a:6,t:"Political loyalty matters more than bloodline."},
+  {a:6,t:"Ethnic continuity should be protected as a national priority.", s:-1},
+
+  {a:7,t:"Protecting nature should come before industrial expansion."},
+  {a:7,t:"Heavy industry and growth should come before environmental limits.", s:-1},
+  {a:7,t:"Economic growth is not worth severe damage to land, water, and air."},
+  {a:7,t:"Modern society needs large-scale industry even if nature suffers.", s:-1},
+  {a:7,t:"A simpler, lower-consumption society is often better."},
+  {a:7,t:"Industrial power is the backbone of national strength.", s:-1},
+
+  {a:8,t:"Traditions should be preserved even when they slow social change."},
+  {a:8,t:"Old customs should change when they block a better future.", s:-1},
+  {a:8,t:"Religion and inherited values should have a stronger public role."},
+  {a:8,t:"Progress matters more than preserving old moral frameworks.", s:-1},
+  {a:8,t:"Stable traditions help keep society healthy."},
+  {a:8,t:"Society should be open to deep cultural change.", s:-1},
+
+  {a:9,t:"People should be allowed to say offensive things without state punishment."},
+  {a:9,t:"Speech should be restricted when it threatens social harmony.", s:-1},
+  {a:9,t:"Free expression is worth tolerating some disorder."},
+  {a:9,t:"Public order is more important than unrestricted speech.", s:-1},
+  {a:9,t:"Censorship usually causes more harm than the speech it blocks."},
+  {a:9,t:"A healthy society needs tighter control over harmful expression.", s:-1},
+
+  {a:10,t:"People should put community needs above personal gain."},
+  {a:10,t:"The individual should come before the group.", s:-1},
+  {a:10,t:"Society works best when people feel duty toward one another."},
+  {a:10,t:"Self-interest is a more reliable guide than collective duty.", s:-1},
+  {a:10,t:"Personal freedom should sometimes give way to social responsibility."},
+  {a:10,t:"People do not owe much to strangers beyond basic respect.", s:-1},
+
+  {a:11,t:"Major systems usually need gradual reform, not total upheaval."},
+  {a:11,t:"Real change often requires a complete break with the old order.", s:-1},
+  {a:11,t:"It is better to improve institutions step by step."},
+  {a:11,t:"Slow reform mainly protects the powerful.", s:-1},
+  {a:11,t:"Stability matters when making political change."},
+  {a:11,t:"Revolution can be justified when society is deeply unjust.", s:-1}
+];
+
+// flip sign when s === -1 so agreement supports second pole
+questions.forEach(q=>{ if(q.s===-1){ q.flip=true; } });
+
+const ideologies = [
+  {name:"Social Democracy", desc:"Supports democracy, welfare, regulation, and a mixed economy.", v:[0.25,0.75,0.35,0.75,0.68,0.72,0.72,0.68,0.45,0.7,0.58,0.72]},
+  {name:"Democratic Socialism", desc:"Seeks socialism through democratic politics, equality, and public ownership.", v:[0.28,0.78,0.45,0.85,0.88,0.8,0.78,0.7,0.52,0.72,0.72,0.55]},
+  {name:"Communism", desc:"Advocates common ownership, equality, and eventual classless society.", v:[0.22,0.56,0.72,0.95,0.98,0.86,0.8,0.72,0.58,0.7,0.9,0.12]},
+  {name:"Marxist-Leninism", desc:"Centralized socialist model with party leadership and state direction.", v:[0.88,0.22,0.68,0.9,0.96,0.92,0.72,0.55,0.5,0.3,0.82,0.08]},
+  {name:"Trotskyism", desc:"Revolutionary Marxism favoring international socialism and permanent struggle.", v:[0.55,0.62,0.92,0.9,0.94,0.86,0.82,0.62,0.62,0.74,0.84,0.02]},
+  {name:"Anarcho-Communism", desc:"Stateless communal society built on cooperation and shared ownership.", v:[0.02,0.88,0.75,0.9,0.97,0.4,0.82,0.84,0.7,0.9,0.92,0.02]},
+  {name:"Libertarian Marxism", desc:"Worker control and socialism without authoritarian state structures.", v:[0.08,0.82,0.74,0.88,0.92,0.62,0.82,0.8,0.62,0.88,0.88,0.18]},
+  {name:"Guild Socialism", desc:"Worker-run industry through guilds and decentralized socialism.", v:[0.18,0.7,0.45,0.8,0.84,0.68,0.74,0.66,0.5,0.68,0.72,0.48]},
+  {name:"Market Socialism", desc:"Social ownership paired with market exchange and democratic control.", v:[0.24,0.74,0.52,0.82,0.72,0.58,0.78,0.64,0.54,0.76,0.7,0.5]},
+  {name:"Distributism", desc:"Prefers widely spread small property, local life, and anti-monopoly economics.", v:[0.35,0.62,0.4,0.66,0.42,0.55,0.74,0.76,0.76,0.58,0.6,0.7]},
+  {name:"Anarcho-Distributism", desc:"Distributism without centralized state power, favoring local autonomy.", v:[0.04,0.86,0.38,0.68,0.4,0.46,0.76,0.84,0.74,0.76,0.68,0.36]},
+  {name:"Communalism", desc:"Decentralized local democracy with strong community control.", v:[0.1,0.86,0.52,0.76,0.68,0.7,0.8,0.84,0.56,0.76,0.8,0.44]},
+  {name:"Anarcho-Syndicalism", desc:"Revolutionary worker-led unions replacing both state and capital.", v:[0.02,0.84,0.62,0.86,0.94,0.56,0.82,0.8,0.58,0.82,0.86,0.05]},
+  {name:"Agrarian Anarchism", desc:"Decentralized rural self-rule, low industry, and strong local autonomy.", v:[0.02,0.78,0.44,0.7,0.56,0.45,0.76,0.92,0.76,0.8,0.68,0.3]},
+  {name:"Anarcho-Environmentalism", desc:"Anarchism focused on ecology, anti-industrialism, and communal life.", v:[0.02,0.84,0.76,0.82,0.72,0.48,0.78,0.98,0.64,0.86,0.84,0.16]},
+  {name:"Classical Liberalism", desc:"Limited government, civil liberties, markets, and constitutionalism.", v:[0.18,0.62,0.64,0.34,0.16,0.14,0.72,0.42,0.46,0.9,0.2,0.72]},
+  {name:"Neoconservatism", desc:"Market-oriented, interventionist, nationalist, and socially moderate-conservative.", v:[0.56,0.42,0.24,0.34,0.14,0.18,0.64,0.26,0.64,0.42,0.26,0.76]},
+  {name:"National Conservatism", desc:"National sovereignty, tradition, order, and conservative social values.", v:[0.62,0.4,0.12,0.3,0.28,0.34,0.3,0.3,0.9,0.28,0.42,0.7]},
+  {name:"Minarchism", desc:"Minimal state devoted mainly to security and property rights.", v:[0.22,0.52,0.42,0.22,0.08,0.02,0.66,0.34,0.46,0.86,0.14,0.74]},
+  {name:"Anarcho-Capitalism", desc:"Stateless private-property society governed by voluntary exchange.", v:[0.0,0.48,0.34,0.08,0.0,0.0,0.58,0.22,0.4,0.86,0.02,0.46]},
+  {name:"Hoppeanism", desc:"Anarcho-capitalist theory with strict property norms and anti-democratic leanings.", v:[0.02,0.08,0.14,0.12,0.0,0.02,0.12,0.24,0.84,0.16,0.04,0.5]},
+  {name:"Neo-Libertarianism", desc:"Modern libertarian outlook focused on free markets and civil freedom.", v:[0.12,0.58,0.48,0.26,0.06,0.04,0.62,0.3,0.44,0.88,0.1,0.7]},
+  {name:"Nationalist Libertarianism", desc:"Libertarian economics mixed with stronger national identity politics.", v:[0.18,0.42,0.14,0.24,0.04,0.04,0.28,0.28,0.72,0.72,0.08,0.68]},
+  {name:"Egoism", desc:"Puts individual self-interest and autonomy above imposed morality.", v:[0.04,0.56,0.52,0.12,0.12,0.18,0.58,0.32,0.2,0.92,0.0,0.44]},
+  {name:"Illegalism", desc:"Radical anti-authoritarian individual rebellion against law and property.", v:[0.0,0.34,0.44,0.18,0.02,0.02,0.62,0.38,0.28,0.9,0.0,0.08]},
+  {name:"Centrism", desc:"Balances competing values and avoids ideological extremes.", v:[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]},
+  {name:"Populism", desc:"Appeals to ordinary people against elites and institutions.", v:[0.4,0.86,0.38,0.58,0.44,0.5,0.56,0.48,0.48,0.62,0.58,0.32]},
+  {name:"Longism", desc:"Populist redistribution aimed at limiting concentrated wealth.", v:[0.52,0.7,0.34,0.8,0.72,0.72,0.64,0.52,0.52,0.5,0.58,0.62]},
+  {name:"Peronism", desc:"National-popular ideology mixing labor rights, welfare, and strong leadership.", v:[0.66,0.6,0.18,0.72,0.62,0.72,0.6,0.46,0.66,0.36,0.64,0.56]},
+  {name:"Social Nationalism", desc:"National unity with welfare and economic intervention.", v:[0.64,0.46,0.12,0.62,0.6,0.68,0.34,0.46,0.74,0.34,0.56,0.62]},
+  {name:"National Capitalism", desc:"Private enterprise directed toward national priorities.", v:[0.72,0.34,0.08,0.3,0.12,0.24,0.24,0.34,0.74,0.26,0.3,0.68]},
+  {name:"Corporatism", desc:"Organizes society through coordinated sectors under public authority.", v:[0.76,0.22,0.22,0.34,0.44,0.74,0.38,0.34,0.72,0.24,0.54,0.74]},
+  {name:"National Syndicalism", desc:"Nationalism combined with worker organization under strong authority.", v:[0.82,0.18,0.08,0.44,0.62,0.72,0.18,0.34,0.82,0.2,0.56,0.2]},
+  {name:"Falangism", desc:"Authoritarian nationalist ideology emphasizing unity and hierarchy.", v:[0.9,0.1,0.04,0.12,0.22,0.66,0.12,0.36,0.92,0.12,0.34,0.18]},
+  {name:"Salazarism", desc:"Order, tradition, corporatism, and authoritarian conservatism.", v:[0.92,0.08,0.14,0.18,0.32,0.56,0.18,0.28,0.96,0.14,0.38,0.84]},
+  {name:"Francoism", desc:"Nationalist authoritarian conservatism with strong traditional order.", v:[0.94,0.08,0.08,0.16,0.28,0.58,0.18,0.26,0.98,0.1,0.42,0.82]},
+  {name:"Catholic Integralism", desc:"Politics centered on Catholic authority over secular liberalism.", v:[0.9,0.1,0.18,0.16,0.38,0.62,0.26,0.24,0.98,0.16,0.46,0.76]},
+  {name:"Absolute Monarchism", desc:"Total monarchical rule and hierarchy over democratic politics.", v:[1.0,0.0,0.18,0.04,0.32,0.44,0.34,0.28,1.0,0.06,0.3,0.84]},
+  {name:"Social Monarchy", desc:"Monarchy mixed with welfare and social cohesion.", v:[0.88,0.16,0.18,0.42,0.62,0.68,0.34,0.4,0.92,0.18,0.54,0.78]},
+  {name:"Monarcho-Socialism", desc:"A monarchic state overseeing socialist redistribution.", v:[0.92,0.08,0.24,0.7,0.86,0.82,0.34,0.42,0.92,0.14,0.6,0.6]},
+  {name:"Bonapartism", desc:"Strong centralized rule justified by order and popular legitimacy.", v:[0.92,0.22,0.26,0.26,0.48,0.66,0.46,0.34,0.74,0.24,0.44,0.7]},
+  {name:"State Capitalism", desc:"State-directed ownership run with market-style goals.", v:[0.82,0.16,0.42,0.38,0.46,0.76,0.6,0.36,0.56,0.24,0.48,0.74]},
+  {name:"Dengism", desc:"Market reform within a one-party socialist state.", v:[0.82,0.18,0.44,0.62,0.52,0.78,0.62,0.34,0.54,0.2,0.58,0.78]},
+  {name:"Juche", desc:"Centralized self-reliant nationalism with total leadership cult.", v:[1.0,0.0,0.04,0.18,0.72,0.88,0.06,0.24,0.9,0.02,0.5,0.76]},
+  {name:"Hoxhaism", desc:"Hardline anti-revisionist communism stressing purity and self-reliance.", v:[0.94,0.08,0.22,0.84,0.96,0.88,0.48,0.3,0.72,0.1,0.8,0.06]},
+  {name:"Stalinism", desc:"Highly centralized socialism with hierarchy, security, and control.", v:[0.98,0.06,0.36,0.84,0.98,0.92,0.54,0.32,0.62,0.04,0.82,0.02]},
+  {name:"Austromarxism", desc:"Democratic Marxism with reformist strategy and social equality.", v:[0.34,0.7,0.68,0.86,0.84,0.76,0.78,0.66,0.56,0.76,0.76,0.68]},
+  {name:"Neo-Marxism", desc:"Modern Marxist analysis focused on culture, power, and inequality.", v:[0.3,0.64,0.76,0.88,0.82,0.78,0.82,0.76,0.7,0.82,0.8,0.48]},
+  {name:"Red Nationalism", desc:"National framework combined with collectivist economic politics.", v:[0.74,0.36,0.08,0.66,0.82,0.8,0.32,0.42,0.68,0.26,0.66,0.34]},
+  {name:"National Communism", desc:"Communism adapted to national independence and sovereignty.", v:[0.82,0.22,0.14,0.82,0.96,0.88,0.36,0.4,0.64,0.18,0.78,0.12]},
+  {name:"National Bolshevism", desc:"Extreme synthesis of centralized socialism and nationalism.", v:[0.96,0.08,0.04,0.3,0.84,0.86,0.08,0.32,0.86,0.08,0.62,0.04]},
+  {name:"Baathism", desc:"Arab nationalist socialism with secular state-led modernization.", v:[0.86,0.24,0.06,0.62,0.74,0.82,0.22,0.28,0.44,0.18,0.62,0.42]},
+  {name:"Titoism", desc:"Socialism with worker self-management and independence from blocs.", v:[0.52,0.56,0.38,0.82,0.82,0.74,0.62,0.56,0.46,0.58,0.7,0.42]},
+  {name:"Gaddafi Socialism", desc:"Direct democracy rhetoric mixed with state-centered resource control.", v:[0.72,0.68,0.12,0.7,0.82,0.84,0.34,0.4,0.62,0.32,0.7,0.26]},
+  {name:"Georgism", desc:"Equal access to land and markets constrained by land-value justice.", v:[0.34,0.68,0.62,0.74,0.36,0.54,0.78,0.7,0.46,0.8,0.56,0.7]},
+  {name:"Welfare Capitalism", desc:"Capitalism with social safety nets and moderate regulation.", v:[0.42,0.62,0.46,0.62,0.34,0.62,0.72,0.58,0.48,0.66,0.48,0.76]},
+  {name:"Corporatocracy", desc:"Business dominance over politics and social priorities.", v:[0.74,0.14,0.36,0.06,0.02,0.04,0.42,0.16,0.42,0.22,0.12,0.8]},
+  {name:"Pinochetism", desc:"Authoritarian rule paired with neoliberal economics.", v:[0.92,0.04,0.12,0.12,0.02,0.02,0.24,0.2,0.82,0.18,0.1,0.82]},
+  {name:"Fascism", desc:"Ultra-authoritarian nationalism centered on unity and hierarchy.", v:[1.0,0.02,0.02,0.0,0.22,0.56,0.04,0.26,1.0,0.02,0.28,0.1]},
+  {name:"National Socialism", desc:"Totalitarian racial-hierarchical fascism with extreme exclusion.", v:[1.0,0.0,0.0,0.0,0.22,0.54,0.0,0.22,1.0,0.0,0.2,0.04]},
+  {name:"Eco-Fascism", desc:"Authoritarian ecological politics fused with exclusionary nationalism.", v:[1.0,0.02,0.02,0.04,0.34,0.68,0.0,0.98,0.96,0.02,0.38,0.08]}
+];
+
+const hero = document.getElementById('hero');
+const quiz = document.getElementById('quiz');
+const results = document.getElementById('results');
+const axisList = document.getElementById('axisList');
+const startBtn = document.getElementById('startBtn');
+const progressText = document.getElementById('progressText');
+const axisHint = document.getElementById('axisHint');
+const progressBar = document.getElementById('progressBar');
+const questionAxis = document.getElementById('questionAxis');
+const questionText = document.getElementById('questionText');
+const answerButtons = [...document.querySelectorAll('.answer-btn')];
+const axisResults = document.getElementById('axisResults');
+const topIdeologies = document.getElementById('topIdeologies');
+const bestIdeology = document.getElementById('bestIdeology');
+const bestDescription = document.getElementById('bestDescription');
+const answeredCount = document.getElementById('answeredCount');
+const coordText = document.getElementById('coordText');
+const dot = document.getElementById('dot');
+const restartBtn = document.getElementById('restartBtn');
+
+axes.forEach(([l,r])=>{
+  const el = document.createElement('div');
+  el.className='axis-chip';
+  el.textContent = `${l} vs ${r}`;
+  axisList.appendChild(el);
+});
+
+let qIndex = 0;
+let scores = Array(axes.length).fill(0);
+let counts = Array(axes.length).fill(0);
+
+function showQuestion(){
+  const q = questions[qIndex];
+  const [l,r] = axes[q.a];
+  progressText.textContent = `Question ${qIndex+1} of ${questions.length}`;
+  axisHint.textContent = `${l} vs ${r}`;
+  progressBar.style.width = `${((qIndex)/questions.length)*100}%`;
+  questionAxis.textContent = `${l} vs ${r}`;
+  questionText.textContent = q.t;
+}
+
+function startQuiz(){
+  hero.classList.remove('active');
+  results.classList.remove('active');
+  quiz.classList.add('active');
+  qIndex = 0;
+  scores = Array(axes.length).fill(0);
+  counts = Array(axes.length).fill(0);
+  showQuestion();
+}
+
+function answerQuestion(raw){
+  const q = questions[qIndex];
+  const val = q.flip ? -raw : raw;
+  scores[q.a] += val;
+  counts[q.a] += 1;
+  qIndex++;
+  if(qIndex < questions.length){
+    showQuestion();
+  } else {
+    renderResults();
+  }
+}
+
+function normalized(){
+  return scores.map((s,i)=>{
+    const max = counts[i] || 1;
+    return Math.max(-1, Math.min(1, s / max));
+  });
+}
+
+function norm01(v){ return (v + 1) / 2; }
+
+function renderResults(){
+  quiz.classList.remove('active');
+  results.classList.add('active');
+  progressBar.style.width = '100%';
+  const n = normalized();
+  answeredCount.textContent = `${questions.length} answers`;
+
+  axisResults.innerHTML='';
+  axes.forEach(([l,r],i)=>{
+    const val = n[i];
+    const pct = Math.round(Math.abs(val)*100);
+    const row = document.createElement('div');
+    row.className='axis-row';
+    const leftWidth = val < 0 ? Math.abs(val)*50 : 0;
+    const rightWidth = val > 0 ? Math.abs(val)*50 : 0;
+    row.innerHTML = `
+      <div class="label"><span>${l}</span><span>${r}</span></div>
+      <div class="track">
+        <div class="fill-left" style="width:${leftWidth}%"></div>
+        <div class="fill-right" style="width:${rightWidth}%"></div>
+        <div class="center-line"></div>
+      </div>
+      <div class="small" style="margin-top:6px;">Leans ${val < 0 ? l : val > 0 ? r : 'center'}${val !== 0 ? ` (${pct}%)` : ''}</div>
+    `;
+    axisResults.appendChild(row);
+  });
+
+  // Compass: x = collective(-) -> market(+), y = authority(top, negative y visually) vs liberty(bottom)
+  const x = n[4];
+  const y = n[0];
+  dot.style.left = `calc(${((x+1)/2)*100}% - 8px)`;
+  dot.style.top = `calc(${((y+1)/2)*100}% - 8px)`;
+  coordText.textContent = `Coordinates • Econ: ${x.toFixed(2)} | Authority-Liberty: ${y.toFixed(2)}`;
+
+  const user = n.map(v => norm01(v));
+  const ranked = ideologies.map(ideo => {
+    let sum = 0;
+    for(let i=0;i<user.length;i++){
+      const diff = user[i] - ideo.v[i];
+      sum += diff*diff;
+    }
+    const dist = Math.sqrt(sum / user.length);
+    const score = Math.max(0, Math.round((1 - dist/1.1) * 100));
+    return {...ideo, match: score, dist};
+  }).sort((a,b)=> b.match - a.match || a.dist - b.dist).slice(0,10);
+
+  bestIdeology.textContent = ranked[0].name;
+  bestDescription.textContent = ranked[0].desc;
+  topIdeologies.innerHTML='';
+  ranked.forEach((ideo, idx)=>{
+    const div = document.createElement('div');
+    div.className='ideo-item';
+    div.innerHTML = `
+      <div><span class="ideo-name">${idx+1}. ${ideo.name}</span><span class="ideo-score">${ideo.match}% match</span></div>
+      <div class="ideo-desc">${ideo.desc}</div>
+    `;
+    topIdeologies.appendChild(div);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+startBtn.addEventListener('click', startQuiz);
+restartBtn.addEventListener('click', startQuiz);
+answerButtons.forEach(btn=>btn.addEventListener('click', ()=> answerQuestion(parseFloat(btn.dataset.value))));
+</script>
+</body>
+</html>
